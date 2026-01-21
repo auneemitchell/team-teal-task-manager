@@ -1,4 +1,4 @@
-import { makeCrudHandlers } from "../helpers.js";
+import { makeCrudHandlers } from "./helpers.js";
 
 // Use the generic CRUD handlers for the Customers collection endpoint
 const handlers = makeCrudHandlers({
