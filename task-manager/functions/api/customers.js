@@ -45,11 +45,15 @@ export async function onRequest(context) {
         });
       }
 
-      await db
-        .prepare(
-          "INSERT INTO Customers (CompanyName, ContactName) VALUES (?, ?)",
-        )
-        .run(company, contact);
+      const insertSql = "INSERT INTO Customers (CompanyName, ContactName) VALUES (?, ?)";
+      const insertValues = [company, contact];
+      const expectedInsertParams = (insertSql.match(/\?/g) || []).length;
+      if (expectedInsertParams !== insertValues.length) {
+        console.error('SQL parameter mismatch (INSERT)', { insertSql, expectedInsertParams, insertValuesLength: insertValues.length, insertValues });
+        throw new Error('D1_ERROR: Wrong number of parameter bindings for SQL query.');
+      }
+      console.debug('Running SQL', insertSql, insertValues);
+      await db.prepare(insertSql).run(...insertValues);
 
       const created = await db
         .prepare(

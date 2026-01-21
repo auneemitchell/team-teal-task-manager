@@ -69,11 +69,15 @@ export async function onRequest(context) {
       }
       values.push(id);
 
-      await db
-        .prepare(
-          `UPDATE Customers SET ${updates.join(", ")} WHERE CustomerID = ?`,
-        )
-        .run(...values);
+      const sql = `UPDATE Customers SET ${updates.join(", ")} WHERE CustomerID = ?`;
+      // debug: ensure parameter count matches
+      const expectedParams = (sql.match(/\?/g) || []).length;
+      if (expectedParams !== values.length) {
+        console.error('SQL parameter mismatch', { sql, expectedParams, valuesLength: values.length, values });
+        throw new Error(`D1_ERROR: Wrong number of parameter bindings for SQL query.`);
+      }
+      console.debug('Running SQL', sql, values);
+      await db.prepare(sql).run(...values);
 
       const updated = await db
         .prepare("SELECT * FROM Customers WHERE CustomerID = ?")
