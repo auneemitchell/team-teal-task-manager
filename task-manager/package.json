@@ -10,8 +10,8 @@
 		"preview": "npm run build && wrangler pages dev",
 		"deploy": "npm run build && wrangler pages deploy",
 		"cf-typegen": "wrangler types",
-		"cf:migrate:test": "wrangler d1 migrations apply --database test-db --migrations-dir ./migrations",
-		"cf:migrate:prod": "wrangler d1 migrations apply --database prod-db --migrations-dir ./migrations"
+		"cf:migrate:test": "npx wrangler d1 migrations apply test_db --remote",
+		"cf:migrate:prod": "npx wrangler d1 migrations apply prod_db --remote"
 	},
 	"dependencies": {
 		"react": "^19.1.1",

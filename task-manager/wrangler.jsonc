@@ -16,8 +16,15 @@
 			"database_name": "prod-db",
 			"database_id": "fb987559-bb5d-4b23-ae1e-a3fe0fb1ae58",
 			"migrations_dir": "migrations",
-			"remote": false,
-		}
+			"remote": false
+		},
+		{
+			"binding": "test_db",
+			"database_name": "test-db",
+			"database_id": "c37b5995-0c25-4643-b80b-74115423f7f5",
+			"migrations_dir": "migrations",
+			"remote": false
+		},
 	]
 	/**
 	 * Smart Placement
