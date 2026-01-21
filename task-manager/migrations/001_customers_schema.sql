@@ -1,5 +1,4 @@
--- Migration: create Customers table
--- Uses `CustomerID` as the primary key to match application code.
+-- Create Customers table
 CREATE TABLE IF NOT EXISTS Customers (
   CustomerID   INTEGER PRIMARY KEY,
   CompanyName  TEXT NOT NULL,

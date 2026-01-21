@@ -1,5 +1,5 @@
--- Seed sample customers
-INSERT INTO Customers (CustomerID, CompanyName, ContactName)
+-- Seed sample customers if they don't exist
+INSERT OR IGNORE INTO Customers (CustomerID, CompanyName, ContactName)
 VALUES
 	(1, 'Alfreds Futterkiste', 'Maria Anders'),
 	(4, 'Around the Horn', 'Thomas Hardy'),

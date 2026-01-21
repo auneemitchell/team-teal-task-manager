@@ -14,7 +14,7 @@
 		{
 			"binding": "cf_db",
 			"database_name": "test-db",
-			"database_id": "c37b5995-0c25-4643-b80b-74115423f7f5",
+			"database_id": "fe5f8703-e307-4850-987b-9d9fb62bfdda",
 			"migrations_dir": "migrations",
 			"remote": true
 		}
@@ -25,7 +25,7 @@
 				{
 					"binding": "cf_db",
 					"database_name": "prod-db",
-					"database_id": "fb987559-bb5d-4b23-ae1e-a3fe0fb1ae58",
+					"database_id": "1007318b-dbb8-46e0-b5e8-b3acf0a54b17",
 					"migrations_dir": "migrations",
 					"remote": true
 				}
