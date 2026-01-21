@@ -3,38 +3,80 @@
 export async function onRequest(context) {
   const { request, env } = context;
 
-  // GET returns all customers as JSON
-  if (request.method === "GET") {
-    const res = await env.prod_db
-      .prepare("SELECT * FROM Customers ORDER BY CustomerID")
-      .all();
-    return new Response(JSON.stringify(res.results || []), {
-      headers: { "Content-Type": "application/json" },
-    });
-  }
+  const db = env.cf_db;
+  const CORS = {
+    "Content-Type": "application/json",
+    "Access-Control-Allow-Origin": "*",
+    "Access-Control-Allow-Methods": "GET,POST,OPTIONS",
+    "Access-Control-Allow-Headers": "Content-Type",
+  };
 
-  // POST creates a new customer and returns it as JSON
-  if (request.method === "POST") {
-    const body = await request.json().catch(() => ({}));
-    const company = (body.CompanyName || body.companyName || "").trim();
-    const contact = body.ContactName || body.contactName || null;
-    if (!company) {
-      return new Response("Missing CompanyName", { status: 400 });
+  try {
+    if (!db) {
+      return new Response(
+        JSON.stringify({
+          error: "No D1 binding found",
+        }),
+        { status: 500, headers: CORS },
+      );
     }
 
-    await env.prod_db
-      .prepare("INSERT INTO Customers (CompanyName, ContactName) VALUES (?, ?)")
-      .run(company, contact);
+    if (request.method === "OPTIONS") {
+      return new Response(null, { status: 204, headers: CORS });
+    }
 
-    const created = await env.prod_db
-      .prepare("SELECT * FROM Customers WHERE CustomerID = last_insert_rowid()")
-      .first();
+    // GET method
+    if (request.method === "GET") {
+      const res = await db
+        .prepare("SELECT * FROM Customers ORDER BY CustomerID")
+        .all();
+      return new Response(JSON.stringify(res.results || []), { headers: CORS });
+    }
 
-    return new Response(JSON.stringify(created || {}), {
-      status: 201,
-      headers: { "Content-Type": "application/json" },
+    // POST method
+    if (request.method === "POST") {
+      const body = await request.json().catch(() => ({}));
+      const company = (body.CompanyName || body.companyName || "").trim();
+      const contact = body.ContactName || body.contactName || null;
+      if (!company) {
+        return new Response(JSON.stringify({ error: "Missing CompanyName" }), {
+          status: 400,
+          headers: CORS,
+        });
+      }
+
+      await db
+        .prepare(
+          "INSERT INTO Customers (CompanyName, ContactName) VALUES (?, ?)",
+        )
+        .run(company, contact);
+
+      const created = await db
+        .prepare(
+          "SELECT * FROM Customers WHERE CustomerID = last_insert_rowid()",
+        )
+        .first();
+      return new Response(JSON.stringify(created || {}), {
+        status: 201,
+        headers: CORS,
+      });
+    }
+
+    return new Response(JSON.stringify({ error: "Method not allowed" }), {
+      status: 405,
+      headers: CORS,
     });
+  } catch (err) {
+    console.error("/api/customers error:", err && err.stack ? err.stack : err);
+    return new Response(
+      JSON.stringify({ error: String(err || "Internal error") }),
+      {
+        status: 500,
+        headers: {
+          "Content-Type": "application/json",
+          "Access-Control-Allow-Origin": "*",
+        },
+      },
+    );
   }
-
-  return new Response(null, { status: 405 });
 }
