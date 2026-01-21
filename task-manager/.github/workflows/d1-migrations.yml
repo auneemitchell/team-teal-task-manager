@@ -1,6 +1,7 @@
 name: D1 migrations (test-db for branches, prod-db for main)
 
 on:
+  workflow_dispatch: {}
   push: {}
   pull_request:
     branches: [ main ]
