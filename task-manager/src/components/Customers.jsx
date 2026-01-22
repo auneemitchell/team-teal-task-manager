@@ -12,7 +12,7 @@ export default function Customers() {
       const res = await fetch("/api/customers");
       const data = await res.json().catch(() => null);
       if (!data || data.error) {
-        console.error('API error loading customers', data);
+        console.error("API error loading customers", data);
         setCustomers([]);
       } else if (Array.isArray(data)) {
         setCustomers(data);
@@ -21,7 +21,7 @@ export default function Customers() {
         setCustomers([]);
       }
     } catch (err) {
-      console.error('Fetch error', err);
+      console.error("Fetch error", err);
       setCustomers([]);
     }
   }
@@ -42,10 +42,10 @@ export default function Customers() {
       });
       const bodyResp = await resp.json().catch(() => null);
       if (!resp.ok) {
-        console.error('Create error', bodyResp);
+        console.error("Create error", bodyResp);
       }
     } catch (err) {
-      console.error('Create fetch error', err);
+      console.error("Create fetch error", err);
     }
     setCompany("");
     setContact("");
@@ -60,7 +60,10 @@ export default function Customers() {
 
   function startEdit(c) {
     setEditingId(String(c.CustomerID));
-    setForm({ CompanyName: c.CompanyName || "", ContactName: c.ContactName || "" });
+    setForm({
+      CompanyName: c.CompanyName || "",
+      ContactName: c.ContactName || "",
+    });
   }
   function cancelEdit() {
     setEditingId(null);
@@ -79,7 +82,9 @@ export default function Customers() {
     });
     if (res.ok) {
       const updated = await res.json();
-      setCustomers(prev => prev.map(p => (p.CustomerID === updated.CustomerID ? updated : p)));
+      setCustomers((prev) =>
+        prev.map((p) => (p.CustomerID === updated.CustomerID ? updated : p)),
+      );
       cancelEdit();
     } else {
       console.error("Update failed", await res.text());
@@ -105,34 +110,69 @@ export default function Customers() {
 
       <table>
         <thead>
-          <tr><th>ID</th><th>Company</th><th>Contact</th><th></th></tr>
+          <tr>
+            <th>ID</th>
+            <th>Company</th>
+            <th>Contact</th>
+            <th></th>
+          </tr>
         </thead>
         <tbody>
-          {customers.map(c => (
+          {customers.map((c) => (
             <tr key={c.CustomerID}>
               <td>{c.CustomerID}</td>
               <td>
                 {editingId === String(c.CustomerID) ? (
-                  <input value={form.CompanyName} onChange={e => setForm({...form, CompanyName: e.target.value})} />
-                ) : c.CompanyName}
+                  <input
+                    value={form.CompanyName}
+                    onChange={(e) =>
+                      setForm({ ...form, CompanyName: e.target.value })
+                    }
+                  />
+                ) : (
+                  c.CompanyName
+                )}
               </td>
               <td>
                 {editingId === String(c.CustomerID) ? (
-                  <input value={form.ContactName} onChange={e => setForm({...form, ContactName: e.target.value})} />
-                ) : c.ContactName}
+                  <input
+                    value={form.ContactName}
+                    onChange={(e) =>
+                      setForm({ ...form, ContactName: e.target.value })
+                    }
+                  />
+                ) : (
+                  c.ContactName
+                )}
               </td>
               <td>
                 {editingId === String(c.CustomerID) ? (
                   <>
-                    <button type="button" onClick={() => saveEdit(c.CustomerID)} style={{ marginRight: 8 }}>Save</button>
-                    <button type="button" onClick={cancelEdit} style={{ marginRight: 8 }}>Cancel</button>
+                    <button
+                      type="button"
+                      onClick={() => saveEdit(c.CustomerID)}
+                      style={{ marginRight: 8 }}
+                    >
+                      Save
+                    </button>
+                    <button
+                      type="button"
+                      onClick={cancelEdit}
+                      style={{ marginRight: 8 }}
+                    >
+                      Cancel
+                    </button>
                   </>
                 ) : (
                   <button
                     type="button"
                     onClick={() => startEdit(c)}
                     data-test={`edit-${c.CustomerID}`}
-                    style={{ marginRight: 8, display: "inline-block", padding: "6px 10px" }}
+                    style={{
+                      marginRight: 8,
+                      display: "inline-block",
+                      padding: "6px 10px",
+                    }}
                   >
                     Edit
                   </button>

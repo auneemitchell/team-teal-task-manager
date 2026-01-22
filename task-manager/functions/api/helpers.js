@@ -17,7 +17,10 @@
 export function buildCorsHeaders(env, req, methods = "GET,POST,OPTIONS") {
   const origin = req.headers.get("Origin");
   if (!origin) return { "Content-Type": "application/json" };
-  const allowed = (env.ALLOWED_ORIGINS || "").split(",").map(s => s.trim()).filter(Boolean);
+  const allowed = (env.ALLOWED_ORIGINS || "")
+    .split(",")
+    .map((s) => s.trim())
+    .filter(Boolean);
   const allowCredentials = env.ALLOW_CREDENTIALS === "true";
   const serverOrigin = new URL(req.url).origin;
 
@@ -30,7 +33,7 @@ export function buildCorsHeaders(env, req, methods = "GET,POST,OPTIONS") {
   const headers = {
     "Content-Type": "application/json",
     "Access-Control-Allow-Origin": origin,
-    "Vary": "Origin",
+    Vary: "Origin",
     "Access-Control-Allow-Methods": methods,
     "Access-Control-Allow-Headers": "Content-Type, Authorization",
   };
@@ -47,7 +50,10 @@ export function buildCorsHeaders(env, req, methods = "GET,POST,OPTIONS") {
  * @returns {Promise<Array<object>>}
  */
 export async function queryAll(db, sql, params = []) {
-  const res = await db.prepare(sql).bind(...params).all();
+  const res = await db
+    .prepare(sql)
+    .bind(...params)
+    .all();
   if (Array.isArray(res)) return res;
   if (res && Array.isArray(res.results)) return res.results;
   return [];
@@ -61,7 +67,10 @@ export async function queryAll(db, sql, params = []) {
  * @returns {Promise<object|null>}
  */
 export async function queryOne(db, sql, params = []) {
-  const row = await db.prepare(sql).bind(...params).first();
+  const row = await db
+    .prepare(sql)
+    .bind(...params)
+    .first();
   return row === undefined ? null : row;
 }
 
@@ -73,7 +82,10 @@ export async function queryOne(db, sql, params = []) {
  * @returns {Promise<object>} run info
  */
 export async function execute(db, sql, params = []) {
-  return db.prepare(sql).bind(...params).run();
+  return db
+    .prepare(sql)
+    .bind(...params)
+    .run();
 }
 
 /**
@@ -112,7 +124,11 @@ export function validateIdentifier(name) {
  */
 export function validateTable(table, allowedTables = []) {
   validateIdentifier(table);
-  if (Array.isArray(allowedTables) && allowedTables.length > 0 && !allowedTables.includes(table)) {
+  if (
+    Array.isArray(allowedTables) &&
+    allowedTables.length > 0 &&
+    !allowedTables.includes(table)
+  ) {
     throw new Error(`Table not allowed: ${table}`);
   }
   return table;
@@ -125,7 +141,7 @@ export function validateTable(table, allowedTables = []) {
  */
 export function validateColumnNames(cols) {
   if (!Array.isArray(cols) || cols.length === 0) return [];
-  cols.forEach(c => validateIdentifier(c));
+  cols.forEach((c) => validateIdentifier(c));
   return cols;
 }
 
@@ -138,7 +154,12 @@ export function validateColumnNames(cols) {
  * @param {Array<string>} allowedTables - optional allow-list of table names
  * @returns {Promise<Array<object>>} array of rows (may be empty)
  */
-export async function selectAllFrom(db, table, { whereClause = "", params = [] } = {}, allowedTables = []) {
+export async function selectAllFrom(
+  db,
+  table,
+  { whereClause = "", params = [] } = {},
+  allowedTables = [],
+) {
   validateTable(table, allowedTables);
   const sql = `SELECT * FROM ${table}${whereClause ? " WHERE " + whereClause : ""}`;
   return queryAll(db, sql, params);
@@ -153,7 +174,12 @@ export async function selectAllFrom(db, table, { whereClause = "", params = [] }
  * @param {Array<string>} allowedTables
  * @returns {Promise<object|null>}
  */
-export async function selectOneFrom(db, table, { whereClause = "", params = [] } = {}, allowedTables = []) {
+export async function selectOneFrom(
+  db,
+  table,
+  { whereClause = "", params = [] } = {},
+  allowedTables = [],
+) {
   validateTable(table, allowedTables);
   const sql = `SELECT * FROM ${table}${whereClause ? " WHERE " + whereClause : ""}`;
   return queryOne(db, sql, params);
@@ -169,10 +195,17 @@ export async function selectOneFrom(db, table, { whereClause = "", params = [] }
  * @param {Array<string>} allowedTables
  * @returns {Promise<object>} run info
  */
-export async function insertInto(db, table, columns = [], values = [], allowedTables = []) {
+export async function insertInto(
+  db,
+  table,
+  columns = [],
+  values = [],
+  allowedTables = [],
+) {
   validateTable(table, allowedTables);
   validateColumnNames(columns);
-  if (columns.length !== values.length) throw new Error("Columns and values length mismatch");
+  if (columns.length !== values.length)
+    throw new Error("Columns and values length mismatch");
   const colList = columns.join(", ");
   const placeholders = columns.map(() => "?").join(", ");
   const sql = `INSERT INTO ${table} (${colList}) VALUES (${placeholders})`;
@@ -190,13 +223,20 @@ export async function insertInto(db, table, columns = [], values = [], allowedTa
  * @param {Array<string>} allowedTables
  * @returns {Promise<object>} run info
  */
-export async function updateTable(db, table, updatesObj = {}, whereClause = "", whereParams = [], allowedTables = []) {
+export async function updateTable(
+  db,
+  table,
+  updatesObj = {},
+  whereClause = "",
+  whereParams = [],
+  allowedTables = [],
+) {
   validateTable(table, allowedTables);
   const cols = Object.keys(updatesObj);
   if (cols.length === 0) throw new Error("Nothing to update");
   validateColumnNames(cols);
-  const assignments = cols.map(c => `${c} = ?`).join(", ");
-  const params = cols.map(c => updatesObj[c]).concat(whereParams);
+  const assignments = cols.map((c) => `${c} = ?`).join(", ");
+  const params = cols.map((c) => updatesObj[c]).concat(whereParams);
   const sql = `UPDATE ${table} SET ${assignments}${whereClause ? " WHERE " + whereClause : ""}`;
   return execute(db, sql, params);
 }
@@ -209,7 +249,12 @@ export async function updateTable(db, table, updatesObj = {}, whereClause = "", 
  * @param {Array<string>} allowedTables
  * @returns {Promise<object>} run info
  */
-export async function deleteFrom(db, table, { whereClause = "", params = [] } = {}, allowedTables = []) {
+export async function deleteFrom(
+  db,
+  table,
+  { whereClause = "", params = [] } = {},
+  allowedTables = [],
+) {
   validateTable(table, allowedTables);
   const sql = `DELETE FROM ${table}${whereClause ? " WHERE " + whereClause : ""}`;
   return execute(db, sql, params);
@@ -244,7 +289,8 @@ export function makeCrudHandlers(options = {}) {
 
   if (!table) throw new Error("makeCrudHandlers requires a table name");
   validateTable(table, allowedTables);
-  if (allowedColumns && allowedColumns.length) validateColumnNames(allowedColumns);
+  if (allowedColumns && allowedColumns.length)
+    validateColumnNames(allowedColumns);
 
   // Collection handler: GET (list), POST (create), OPTIONS
   async function collection(context) {
@@ -252,12 +298,20 @@ export function makeCrudHandlers(options = {}) {
     const db = env[dbEnvVar];
     const CORS = buildCorsHeaders(env, request, "GET,POST,OPTIONS");
     if (request.headers.get("Origin") && !CORS) {
-      return new Response(JSON.stringify({ error: "Origin not allowed" }), { status: 403, headers: { "Content-Type": "application/json" } });
+      return new Response(JSON.stringify({ error: "Origin not allowed" }), {
+        status: 403,
+        headers: { "Content-Type": "application/json" },
+      });
     }
 
     try {
-      if (!db) return new Response(JSON.stringify({ error: "Database not found" }), { status: 500, headers: CORS });
-      if (request.method === "OPTIONS") return new Response(null, { status: 204, headers: CORS });
+      if (!db)
+        return new Response(JSON.stringify({ error: "Database not found" }), {
+          status: 500,
+          headers: CORS,
+        });
+      if (request.method === "OPTIONS")
+        return new Response(null, { status: 204, headers: CORS });
 
       if (request.method === "GET") {
         const whereClause = "";
@@ -270,23 +324,44 @@ export function makeCrudHandlers(options = {}) {
 
       if (request.method === "POST") {
         const body = await parseJson(request);
-        // choose columns from allowedColumns if provided, otherwise from body keys
-        const payloadCols = (allowedColumns && allowedColumns.length) ? allowedColumns.slice() : Object.keys(body || {}).filter(k => body[k] !== undefined);
+        // Choose columns from allowedColumns if provided (but only those present in body), otherwise from body keys
+        const payloadCols =
+          allowedColumns && allowedColumns.length
+            ? allowedColumns.filter((c) => body[c] !== undefined)
+            : Object.keys(body || {}).filter((k) => body[k] !== undefined);
         validateColumnNames(payloadCols);
-        const values = payloadCols.map(c => body[c]);
+        const values = payloadCols.map((c) => body[c]);
         if (payloadCols.length === 0) {
-          return new Response(JSON.stringify({ error: "Nothing to create" }), { status: 400, headers: CORS });
+          return new Response(JSON.stringify({ error: "Nothing to create" }), {
+            status: 400,
+            headers: CORS,
+          });
         }
 
         await insertInto(db, table, payloadCols, values, allowedTables);
-        const created = await queryOne(db, `SELECT * FROM ${table} WHERE ${primaryKey} = last_insert_rowid()`);
-        return new Response(JSON.stringify(created || {}), { status: 201, headers: CORS });
+        const created = await queryOne(
+          db,
+          `SELECT * FROM ${table} WHERE ${primaryKey} = last_insert_rowid()`,
+        );
+        return new Response(JSON.stringify(created || {}), {
+          status: 201,
+          headers: CORS,
+        });
       }
 
-      return new Response(JSON.stringify({ error: "Method not allowed" }), { status: 405, headers: CORS });
+      return new Response(JSON.stringify({ error: "Method not allowed" }), {
+        status: 405,
+        headers: CORS,
+      });
     } catch (err) {
-      console.error(`/api/${table} collection error:`, err && err.stack ? err.stack : err);
-      return new Response(JSON.stringify({ error: String(err || "Internal error") }), { status: 500, headers: { "Content-Type": "application/json" } });
+      console.error(
+        `/api/${table} collection error:`,
+        err && err.stack ? err.stack : err,
+      );
+      return new Response(
+        JSON.stringify({ error: String(err || "Internal error") }),
+        { status: 500, headers: { "Content-Type": "application/json" } },
+      );
     }
   }
 
@@ -297,17 +372,38 @@ export function makeCrudHandlers(options = {}) {
     const db = env[dbEnvVar];
     const CORS = buildCorsHeaders(env, request, "GET,PUT,PATCH,DELETE,OPTIONS");
     if (request.headers.get("Origin") && !CORS) {
-      return new Response(JSON.stringify({ error: "Origin not allowed" }), { status: 403, headers: { "Content-Type": "application/json" } });
+      return new Response(JSON.stringify({ error: "Origin not allowed" }), {
+        status: 403,
+        headers: { "Content-Type": "application/json" },
+      });
     }
 
     try {
-      if (!db) return new Response(JSON.stringify({ error: "Database not found" }), { status: 500, headers: CORS });
-      if (request.method === "OPTIONS") return new Response(null, { status: 204, headers: CORS });
-      if (!id) return new Response(JSON.stringify({ error: "Missing id" }), { status: 400, headers: CORS });
+      if (!db)
+        return new Response(JSON.stringify({ error: "Database not found" }), {
+          status: 500,
+          headers: CORS,
+        });
+      if (request.method === "OPTIONS")
+        return new Response(null, { status: 204, headers: CORS });
+      if (!id)
+        return new Response(JSON.stringify({ error: "Missing id" }), {
+          status: 400,
+          headers: CORS,
+        });
 
       if (request.method === "GET") {
-        const row = await selectOneFrom(db, table, { whereClause: `${primaryKey} = ?`, params: [id] }, allowedTables);
-        if (!row) return new Response(JSON.stringify({}), { status: 404, headers: CORS });
+        const row = await selectOneFrom(
+          db,
+          table,
+          { whereClause: `${primaryKey} = ?`, params: [id] },
+          allowedTables,
+        );
+        if (!row)
+          return new Response(JSON.stringify({}), {
+            status: 404,
+            headers: CORS,
+          });
         return new Response(JSON.stringify(row), { headers: CORS });
       }
 
@@ -315,29 +411,61 @@ export function makeCrudHandlers(options = {}) {
         const body = await parseJson(request);
         // prepare updates using allowedColumns (if provided) or any keys in body
         const updates = {};
-        const candidates = (allowedColumns && allowedColumns.length) ? allowedColumns : Object.keys(body || {});
-        candidates.forEach(col => {
+        const candidates =
+          allowedColumns && allowedColumns.length
+            ? allowedColumns
+            : Object.keys(body || {});
+        candidates.forEach((col) => {
           if (body[col] !== undefined) updates[col] = body[col];
         });
         const cols = Object.keys(updates);
         if (cols.length === 0) {
-          return new Response(JSON.stringify({ error: "Nothing to update" }), { status: 400, headers: CORS });
+          return new Response(JSON.stringify({ error: "Nothing to update" }), {
+            status: 400,
+            headers: CORS,
+          });
         }
 
-        await updateTable(db, table, updates, `${primaryKey} = ?`, [id], allowedTables);
-        const updated = await selectOneFrom(db, table, { whereClause: `${primaryKey} = ?`, params: [id] }, allowedTables);
+        await updateTable(
+          db,
+          table,
+          updates,
+          `${primaryKey} = ?`,
+          [id],
+          allowedTables,
+        );
+        const updated = await selectOneFrom(
+          db,
+          table,
+          { whereClause: `${primaryKey} = ?`, params: [id] },
+          allowedTables,
+        );
         return new Response(JSON.stringify(updated || {}), { headers: CORS });
       }
 
       if (request.method === "DELETE") {
-        await deleteFrom(db, table, { whereClause: `${primaryKey} = ?`, params: [id] }, allowedTables);
+        await deleteFrom(
+          db,
+          table,
+          { whereClause: `${primaryKey} = ?`, params: [id] },
+          allowedTables,
+        );
         return new Response(null, { status: 204, headers: CORS });
       }
 
-      return new Response(JSON.stringify({ error: "Method not allowed" }), { status: 405, headers: CORS });
+      return new Response(JSON.stringify({ error: "Method not allowed" }), {
+        status: 405,
+        headers: CORS,
+      });
     } catch (err) {
-      console.error(`/api/${table}/${id} error:`, err && err.stack ? err.stack : err);
-      return new Response(JSON.stringify({ error: String(err || "Internal error") }), { status: 500, headers: { "Content-Type": "application/json" } });
+      console.error(
+        `/api/${table}/${id} error:`,
+        err && err.stack ? err.stack : err,
+      );
+      return new Response(
+        JSON.stringify({ error: String(err || "Internal error") }),
+        { status: 500, headers: { "Content-Type": "application/json" } },
+      );
     }
   }
 
