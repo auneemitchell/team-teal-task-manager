@@ -1,15 +1,21 @@
-import { useState } from "react";
 import "./App.css";
-import Customers from "./components/Customers.jsx";
+import { Routes, Route } from "react-router-dom";
+import Home from "./pages/Home.jsx";
+import TaskDetail from "./pages/TaskDetail.jsx";
 
-function App() {
-  const [count, setCount] = useState(0);
-
+export default function App() {
   return (
-    <>
-      <Customers />
-    </>
+    <Routes>
+      {/*
+        A static route:
+      */}
+      <Route path="/" element={<Home />} />
+
+      {/*
+        A dynamic route with a parameter.
+        In the rendered component, you can read { id } via useParams().
+      */}
+      <Route path="/task/:id" element={<TaskDetail />} />
+    </Routes>
   );
 }
-
-export default App;
