@@ -257,6 +257,7 @@ export async function deleteFrom(
   allowedTables = [],
 ) {
   validateTable(table, allowedTables);
+  if(!whereClause) throw new Error("Missing WHERE clause for delete");
   const sql = `DELETE FROM ${table}${whereClause ? " WHERE " + whereClause : ""}`;
   return execute(db, sql, params);
 }
