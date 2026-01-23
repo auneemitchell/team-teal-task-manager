@@ -232,6 +232,7 @@ export async function updateTable(
   allowedTables = [],
 ) {
   validateTable(table, allowedTables);
+  if(!whereClause) throw new Error("Missing WHERE clause for update");
   const cols = Object.keys(updatesObj);
   if (cols.length === 0) throw new Error("Nothing to update");
   validateColumnNames(cols);
