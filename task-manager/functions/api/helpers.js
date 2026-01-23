@@ -363,7 +363,7 @@ export function makeCrudHandlers(options = {}) {
       );
       return new Response(
         JSON.stringify({ error: String(err || "Internal error") }),
-        { status: 500, headers: { "Content-Type": "application/json" } },
+        { status: 500, headers: CORS || { "Content-Type": "application/json" } },
       );
     }
   }
