@@ -289,6 +289,7 @@ export function makeCrudHandlers(options = {}) {
 
   if (!table) throw new Error("makeCrudHandlers requires a table name");
   validateTable(table, allowedTables);
+  validateIdentifier(primaryKey);
   if (allowedColumns && allowedColumns.length)
     validateColumnNames(allowedColumns);
 
