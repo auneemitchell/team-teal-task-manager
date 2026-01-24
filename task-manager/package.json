@@ -12,7 +12,7 @@
 		"cf-typegen": "wrangler types",
 		"cf:migrate:test": "npx wrangler d1 migrations apply cf_db --remote",
 		"cf:migrate:prod": "npx wrangler d1 migrations apply cf_db --remote --env production",
-		"migrate:local": "node ./scripts/migrate"
+		"migrate:local": "node ./scripts/migrate_local.js"
 	},
 	"dependencies": {
 		"better-sqlite3": "^12.6.2",
