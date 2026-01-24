@@ -1,26 +1,40 @@
-import TaskCard from "../components/TaskCard.jsx";
-
-const DEMO_TASKS = [
-  { id: 1, title: "Set up routing", status: "In Progress" },
-  { id: 2, title: "Design task schema", status: "Backlog" },
-  { id: 3, title: "Implement task detail view", status: "Blocked" },
-];
+import { useState } from "react";
+import TaskForm from "../components/TaskForm.jsx";
 
 export default function Home() {
+  const [showCreateModal, setShowCreateModal] = useState(false);
+
+  function openModal() {
+    setShowCreateModal(true);
+  }
+
+  function closeModal() {
+    setShowCreateModal(false);
+  }
+
+  function handleCreated(task) {
+    console.log("Created task", task);
+    closeModal();
+  }
+
   return (
     <div>
-      <h1>Demo tasks:</h1>
-      <p>
-        Click a task to navigate to its detail page. Clicking changes the URL to <code>/task/:id</code>.
-      </p>
+      <h1>Task Manager Demo</h1>
 
-      <ul>
-        {DEMO_TASKS.map((task) => (
-          <li key={task.id}>
-            <TaskCard task={task} />
-          </li>
-        ))}
-      </ul>
+      <button type="button" onClick={openModal}>
+        + New Task
+      </button>
+
+      {showCreateModal && (
+        <TaskForm
+          projectId={1}
+          createdBy={1}
+          modifiedBy={1}
+          columnId={null}
+          onSuccess={handleCreated}
+          onCancel={closeModal}
+        />
+      )}
     </div>
   );
 }
