@@ -2,11 +2,12 @@ import fs from 'fs';
 import path from 'path';
 import Database from 'better-sqlite3';
 
-const db = new Database('dev.db');
+const DB_PATH = process.env.DB_PATH || './dev.db';
+const db = new Database(path.resolve(DB_PATH));
 db.pragma('journal_mode = WAL');
 db.pragma('foreign_keys = ON');
 
-const MIGRATIONS_DIR = '../migrations';
+const MIGRATIONS_DIR = './migrations';
 
 /**
  * Runs all migrations under specified directory. If a migration has already been applied,
