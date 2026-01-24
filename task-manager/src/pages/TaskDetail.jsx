@@ -15,7 +15,9 @@ import { formatDate, isDateOverdue } from "../utils/dateHelpers.js";
  *   names.
  *
  * TODO: Once comments are implemented, we should also display comments
-*    on this page.
+ *   on this page.
+ *
+ * TODO: Make sure database connection is working, once tasks backend api is implemetned
  */
 export default function TaskDetail() {
   const { id } = useParams();

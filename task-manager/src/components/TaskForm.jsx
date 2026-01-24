@@ -30,6 +30,8 @@ import "./taskform.css";
  * - onCancel(): called when the user clicks Cancel; parent usually hides the modal.
  *
  * TODO: We should show the Assignee and Report inputs as dropdowns of eligable users
+ *
+ * TODO: Make sure this works once the backend is implemented
  */
 const EMPTY_FORM = {
   title: "",
