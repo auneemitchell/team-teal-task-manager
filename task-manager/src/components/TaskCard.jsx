@@ -7,9 +7,9 @@ import { formatDate, isDateOverdue } from "../utils/dateHelpers.js";
  *
  * Presentational component for displaying a single task inside a board column.
  * - Does not make any API calls.
- * - Expects a fully-populated `task` object to be passed in as a prop.
+ * - Expects a populated `task` object to be passed in as a prop.
  * - The parent column / list is responsible for loading tasks from the backend
- *   and passing the right data into this component.
+ *   and passing the correct data into this component.
  */
 export default function TaskCard({ task }) {
   const navigate = useNavigate();

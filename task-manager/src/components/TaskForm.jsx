@@ -6,15 +6,16 @@ import "./taskform.css";
  *
  * Pop-up form used to create or edit a task card.
  *
- * Responsibilities:
  * - Renders the task fields (title, description, sprint, reporter, assignee, dates).
  * - Handles local form state, validation, and submit state.
  * - Talks to the backend API to create or update a task via /api/tasks.
  * - When given a taskId, loads the existing task from /api/tasks/:id and switches to edit mode.
  * - Optionally links a new task to a column via /api/column_tasks when columnId is provided.
  *
- * How it is typically used:
- * - The parent decides when to show the form (often inside a modal overlay, as in Home.jsx).
+ * - This popup modal is designed to be used in (at least) these three places:
+ *      - Backlog/Board-level 'create task' button
+ *      - Column-level 'create task' button
+ *      - Task Detail 'edit task' button
  * - For creating a task, the parent omits taskId.
  * - For editing a task, the parent passes taskId; TaskForm fetches and populates the fields.
  * - The parent passes context values like projectId, createdBy, modifiedBy, and columnId
@@ -24,7 +25,7 @@ import "./taskform.css";
  *
  * Props:
  * - taskId: optional id of the task to edit; when present, the form behaves in "edit" mode.
- * - projectId, createdBy, modifiedBy: non-editable values that get sent to the API.
+ * - projectId, createdBy, modifiedBy: non-editable values that get sent to the API, provided by parent.
  * - columnId: optional column to link the new task to via column_tasks on create.
  * - onSuccess(task): called after a successful create or update.
  * - onCancel(): called when the user clicks Cancel; parent usually hides the modal.
@@ -32,6 +33,7 @@ import "./taskform.css";
  * TODO: We should show the Assignee and Report inputs as dropdowns of eligable users
  *
  * TODO: Make sure this works once the backend is implemented
+ *
  */
 const EMPTY_FORM = {
   title: "",
