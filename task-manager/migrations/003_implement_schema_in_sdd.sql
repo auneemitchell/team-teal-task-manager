@@ -70,6 +70,29 @@ CREATE TABLE IF NOT EXISTS Tasks (
     FOREIGN KEY (modified_by) REFERENCES Users(id) ON DELETE SET NULL
 );
 
+-- Tasks: ensure start_date never exceeds due_date...
+-- ...on insert
+CREATE TRIGGER validate_task_dates
+BEFORE INSERT ON Tasks
+FOR EACH ROW
+WHEN NEW.start_date IS NOT NULL 
+AND NEW.due_date IS NOT NULL
+AND julianday(NEW.start_date) > julianday(NEW.end_date)
+BEGIN
+SELECT RAISE(ABORT, 'start_date must be <= due_date');
+END;
+
+-- ...on update
+CREATE TRIGGER validate_task_dates
+BEFORE INSERT ON Tasks
+FOR EACH ROW
+WHEN NEW.start_date IS NOT NULL 
+AND NEW.due_date IS NOT NULL
+AND julianday(NEW.start_date) > julianday(NEW.end_date)
+BEGIN
+SELECT RAISE(ABORT, 'start_date must be <= due_date');
+END;
+
 -- create COLUMN TASKS junction
 CREATE TABLE IF NOT EXISTS Column_Tasks (
     task_id INTEGER NOT NULL,
