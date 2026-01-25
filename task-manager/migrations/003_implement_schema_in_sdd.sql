@@ -72,7 +72,7 @@ CREATE TABLE IF NOT EXISTS Tasks (
 
 -- Tasks: ensure start_date never exceeds due_date...
 -- ...on insert
-CREATE TRIGGER validate_task_dates
+CREATE TRIGGER validate_task_dates_insert
 BEFORE INSERT ON Tasks
 FOR EACH ROW
 WHEN NEW.start_date IS NOT NULL 
@@ -83,8 +83,8 @@ SELECT RAISE(ABORT, 'start_date must be <= due_date');
 END;
 
 -- ...on update
-CREATE TRIGGER validate_task_dates
-BEFORE INSERT ON Tasks
+CREATE TRIGGER validate_task_dates_update
+BEFORE UPDATE ON Tasks
 FOR EACH ROW
 WHEN NEW.start_date IS NOT NULL 
 AND NEW.due_date IS NOT NULL
