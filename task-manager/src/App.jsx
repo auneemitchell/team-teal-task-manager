@@ -9,6 +9,7 @@ function App() {
   return (
     <>
       <div style={{ display: "grid", gap: 24 }}>
+        <Customers />
         <Tasks />
       </div>
     </>
