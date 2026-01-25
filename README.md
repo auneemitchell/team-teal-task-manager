@@ -11,22 +11,3 @@ The settings automatically use the test-db test database for non-main deployment
 I've added example database files under the `migrations` folder. The SQL files are run in order of their starting numbers (i.e. 001, 002, etc.). Under functions/api, I've added helpers.js to try to make it easier to make CRUD endpoints for tables. I've added `functions/api/customers.js` for the example API customers endpoint and `functions/api/customers/[id].js` for the example API customers/:id endpoint. I've also added Customers.jsx as a component to demonstrate how to use the APIs.
 
 For adding a new table, you'll need to add the schema to the migrations folder. Then you'll want to add the API endpoints. Lastly, you'll want to interact with those API endpoints in the component.
-
-## Backend — Local development (SQLite)
-
-This project uses Cloudflare D1 in production, but for local development we use a local SQLite DB (`dev.db`) and a simple migration script.
-
-Prerequisites
-- Node.js (16+)
-- npm
-- (optional) sqlite3 CLI for manual inspection: `sudo apt install sqlite3` or `brew install sqlite`
-
-Install dependencies
-```bash
-cd task-manager
-npm install
-```
-Run migration script
-```
-npm run migrate:local
-```
