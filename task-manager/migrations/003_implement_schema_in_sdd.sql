@@ -77,7 +77,7 @@ BEFORE INSERT ON Tasks
 FOR EACH ROW
 WHEN NEW.start_date IS NOT NULL 
 AND NEW.due_date IS NOT NULL
-AND julianday(NEW.start_date) > julianday(NEW.end_date)
+AND julianday(NEW.start_date) > julianday(NEW.due_date)
 BEGIN
 SELECT RAISE(ABORT, 'start_date must be <= due_date');
 END;
@@ -88,9 +88,32 @@ BEFORE UPDATE ON Tasks
 FOR EACH ROW
 WHEN NEW.start_date IS NOT NULL 
 AND NEW.due_date IS NOT NULL
-AND julianday(NEW.start_date) > julianday(NEW.end_date)
+AND julianday(NEW.start_date) > julianday(NEW.due_date)
 BEGIN
 SELECT RAISE(ABORT, 'start_date must be <= due_date');
+END;
+
+-- Sprints: ensure start_date never exceeds end_date...
+-- ...on insert
+CREATE TRIGGER validate_sprint_dates_insert
+BEFORE INSERT ON Sprint
+FOR EACH ROW
+WHEN NEW.start_date IS NOT NULL 
+AND NEW.end_date IS NOT NULL
+AND julianday(NEW.start_date) > julianday(NEW.end_date)
+BEGIN
+SELECT RAISE(ABORT, 'start_date must be <= end_date');
+END;
+
+-- ...on update
+CREATE TRIGGER validate_sprint_dates_update
+BEFORE UPDATE ON Sprint
+FOR EACH ROW
+WHEN NEW.start_date IS NOT NULL 
+AND NEW.end_date IS NOT NULL
+AND julianday(NEW.start_date) > julianday(NEW.end_date)
+BEGIN
+SELECT RAISE(ABORT, 'start_date must be <= end_date');
 END;
 
 -- create COLUMN TASKS junction
