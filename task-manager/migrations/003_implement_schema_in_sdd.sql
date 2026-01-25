@@ -96,7 +96,7 @@ END;
 -- Sprints: ensure start_date never exceeds end_date...
 -- ...on insert
 CREATE TRIGGER validate_sprint_dates_insert
-BEFORE INSERT ON Sprint
+BEFORE INSERT ON Sprints
 FOR EACH ROW
 WHEN NEW.start_date IS NOT NULL 
 AND NEW.end_date IS NOT NULL
@@ -107,7 +107,7 @@ END;
 
 -- ...on update
 CREATE TRIGGER validate_sprint_dates_update
-BEFORE UPDATE ON Sprint
+BEFORE UPDATE ON Sprints
 FOR EACH ROW
 WHEN NEW.start_date IS NOT NULL 
 AND NEW.end_date IS NOT NULL
