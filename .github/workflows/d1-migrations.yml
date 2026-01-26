@@ -1,4 +1,4 @@
-name: D1 migrations (test-db for branches, prod-db for main)
+name: Run CloudFlare D1 Migrations (test-db for branches, prod-db for main)
 
 on:
   workflow_dispatch: {}
@@ -10,6 +10,9 @@ jobs:
   migrate-test:
     if: github.ref != 'refs/heads/main'
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: task-manager
     steps:
       - uses: actions/checkout@v4
       - name: Install dependencies
@@ -23,6 +26,9 @@ jobs:
   migrate-prod:
     if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: task-manager
     needs: [migrate-test]
     steps:
       - uses: actions/checkout@v4
