@@ -14,6 +14,10 @@ import { formatDate, isDateOverdue } from "../utils/dateHelpers.js";
 export default function TaskCard({ task }) {
   const navigate = useNavigate();
 
+  if (!task || task.id == null) {
+    return null;
+  }
+
   const {
     id,
     title,

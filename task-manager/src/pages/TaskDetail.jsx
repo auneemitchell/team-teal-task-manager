@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { formatDate, isDateOverdue } from "../utils/dateHelpers.js";
+import "./taskdetail.css";
 
 /**
  * TaskDetail
@@ -121,7 +122,7 @@ export default function TaskDetail() {
           </div>
           <div>
             <dt>Due</dt>
-            <dd className={isOverdue ? "task-card__due task-card__due--overdue" : "task-card__due"}>
+            <dd className={isOverdue ? "task-detail__due task-detail__overdue" : "task-detail__due"}>
               {formatDate(due_date)}
             </dd>
           </div>
