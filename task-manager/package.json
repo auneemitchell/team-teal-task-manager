@@ -11,9 +11,12 @@
 		"deploy": "npm run build && wrangler pages deploy",
 		"cf-typegen": "wrangler types",
 		"cf:migrate:test": "npx wrangler d1 migrations apply cf_db --remote",
-		"cf:migrate:prod": "npx wrangler d1 migrations apply cf_db --remote --env production"
+		"cf:migrate:prod": "npx wrangler d1 migrations apply cf_db --remote --env production",
+		"migrate:local": "node ./scripts/migrate_local.js"
 	},
 	"dependencies": {
+		"better-sqlite3": "^12.6.2",
+		"fs": "^0.0.1-security",
 		"react": "^19.1.1",
 		"react-dom": "^19.1.1"
 	},
