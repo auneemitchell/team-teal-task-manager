@@ -2,6 +2,10 @@ import "./App.css";
 import { Routes, Route } from "react-router-dom";
 import Home from "./pages/Home.jsx";
 import TaskDetail from "./pages/TaskDetail.jsx";
+import Customers from "./components/Customers.jsx";
+import Tasks from "./components/Tasks.jsx";
+
+
 
 export default function App() {
   return (

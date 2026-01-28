@@ -2,7 +2,7 @@
 
 ## Using CloudFlare Pages
 
-GitHub has been integrated with CloudFlare pages. If you make a draft pull request for your branch, you'll see the build result for CloudFlare pages with every commit and are able to see the URL for accessing the preview build for your branch. Please note we are limited to 500 builds a month, so try to not spam commits.
+GitHub has been integrated with CloudFlare pages. If you make a draft pull request for your branch, you'll see the build result for CloudFlare pages with every push (i.e. git push -u origin branch-name) and are able to see the URL for accessing the preview build for your branch. Please note we are limited to 500 builds a month, so try to not spam pushes (local commits are fine).
 
 ## Using the D1 SQL Database
 
