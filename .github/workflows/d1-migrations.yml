@@ -29,7 +29,6 @@ jobs:
     defaults:
       run:
         working-directory: task-manager
-    needs: [migrate-test]
     steps:
       - uses: actions/checkout@v4
       - name: Install dependencies
