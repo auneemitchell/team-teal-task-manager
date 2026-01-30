@@ -15,8 +15,7 @@
 			"binding": "cf_db",
 			"database_name": "test-db",
 			"database_id": "fe5f8703-e307-4850-987b-9d9fb62bfdda",
-			"migrations_dir": "migrations",
-			"remote": true
+			"migrations_dir": "migrations"
 		}
 	],
 	"env": {
@@ -26,8 +25,7 @@
 					"binding": "cf_db",
 					"database_name": "prod-db",
 					"database_id": "1007318b-dbb8-46e0-b5e8-b3acf0a54b17",
-					"migrations_dir": "migrations",
-					"remote": true
+					"migrations_dir": "migrations"
 				}
 			]
 		}
