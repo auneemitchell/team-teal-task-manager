@@ -23,9 +23,6 @@ const updateHandlers = makeCrudHandlers({
 // GET a row/comment
 export const onRequestGet = createHandlers.item; 
 
- // POST new row/comment
-export const onRequestPost = createHandlers.collection;
-
 // UPDATE row/comment (content only)
 export const onRequestPatch = updateHandlers.item; 
 

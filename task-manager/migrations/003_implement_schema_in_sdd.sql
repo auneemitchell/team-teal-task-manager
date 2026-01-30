@@ -139,6 +139,7 @@ CREATE TABLE Comments (
 );
 
 -- Triggers
+-- When a row is updated, automatically update its updated_at field to current timestamp
 CREATE TRIGGER update_comments_updated_at
 AFTER UPDATE ON Comments
 FOR EACH ROW
