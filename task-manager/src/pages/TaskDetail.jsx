@@ -27,13 +27,13 @@ export default function TaskDetail() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   // List of comments for this task
-  const [comments, setComments] = useState(null);
+  const [comments, setComments] = useState([]);
   // Loading comments state for this task
   const [commentsLoading, setCommentsLoading] = useState(true);
   // Error state for comments for this task
   const [commentsError, setCommentsError] = useState(null);
   // Content of a new comment that is being written
-  const [newComment, setComment] = useState("");
+  const [newComment, setNewComment] = useState("");
 
   useEffect(() => {
     async function loadTask() {
@@ -61,7 +61,33 @@ export default function TaskDetail() {
     }
   }, [id]);
 
-  //Comments useEffect
+  // Comments useEffect
+  useEffect(() => {
+    async function loadComments() {
+      if (!id) return;
+      setCommentsLoading(true);
+      setCommentsError(null);
+      try {
+        const res = await fetch(`/api/comments?task_id=${id}`);
+        const data = await res.json().catch(() => null);
+        if (!res.ok || !Array.isArray(data)) {
+          console.error("API error loading comments", data);
+          setCommentsError("Unable to load comments from server.");
+          setComments([]);
+        } else {
+          setComments(data);
+        }
+      } catch (err) {
+        console.error("Fetch error loading comments", err);
+        setCommentsError("Network error loading comments.");
+        setComments([]);
+      } finally {
+        setCommentsLoading(false);
+      }
+    }
+
+    loadComments();
+  }, [id]);
 
 
   const {
@@ -172,6 +198,7 @@ export default function TaskDetail() {
       <section className="task-detail-section">
           <h2>Comments</h2>
           {commentsError && <p>{commentsError}</p>}
+          {commentsLoading && <p>Loading comments…</p>}
           {comments.length === 0 && !commentsLoading && <p>No comments yet.</p>}
 
           <ul className="comments-list">
