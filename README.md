@@ -22,7 +22,11 @@ To run a local copy of the DB and test your changes on a local host:
 
 2. Migrate the database locally (creates a local D1 SQLite DB)
 
-    ``` npm run predev```
+    ``` npm run predev ```
+
+3. Build the frontend
+
+    ``` npm run build ```
 
 3. Start the local development server. This runs Cloudflare Pages + API server locally.
 
