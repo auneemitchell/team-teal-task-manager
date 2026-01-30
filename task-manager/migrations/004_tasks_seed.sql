@@ -15,7 +15,7 @@ VALUES
 INSERT OR IGNORE INTO Projects (id, name, created_by)
 VALUES
   (1, 'Demo Project', 3);
-
+1
 -- Seed a demo sprint for the project
 INSERT OR IGNORE INTO Sprints (id, project_id, name, start_date, end_date, created_by)
 VALUES
@@ -39,10 +39,10 @@ VALUES
   (3, 1, NULL, 1, NULL, 1, NULL, 'Write docs', 'Add README notes for local dev', NULL, NULL);
 
   -- Seed example comments
-  INSERT INTO OR IGNORE INTO Comments (
+  INSERT OR IGNORE INTO Comments (
     id, task_id, created_by, content, created_at, updated_at
   )
   VALUES
     (1, 1, 2, 'This task has no AC.', '2026-01-05', '2026-01-05'),
     (2, 1, 3, 'Added AC.', '2026-01-06', '2026-01-06'),
-    (3, 2, 1, 'This task should be on next sprint.', '2026-01-07', '2026-01-07')
+    (3, 2, 1, 'This task should be on next sprint.', '2026-01-07', '2026-01-07');
