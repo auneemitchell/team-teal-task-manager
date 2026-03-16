@@ -10,13 +10,13 @@ export default defineConfig({
   plugins: [
     react(),
     tailwindcss(),
-    // only enable instrumentation when CYPRESS env var is set
+
     isCypress &&
       istanbul({
         include: ['src/**/*'],
         extension: ['.js', '.ts', '.jsx', '.tsx'],
         cypress: true,
-        forceBuildInstrument: true, // helps ensure instrumentation in some flows
+        forceBuildInstrument: true, 
       }),
   ].filter(Boolean),
 })
