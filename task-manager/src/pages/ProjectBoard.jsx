@@ -6,6 +6,7 @@ import NewTaskButton from "../components/NewTaskButton.jsx";
 import Backlog from "../components/Backlog.jsx";
 import Sprints from "../components/Sprints.jsx";
 import ProjectSelector from "../components/ProjectSelector.jsx";
+import { findActiveSprint } from "../utils/sprintHelpers.js";
 
 /**
  * ProjectBoard Page
@@ -82,8 +83,11 @@ export default function ProjectBoard() {
       }
       setSprints(sprintList);
 
-      // If current sprint is not in current project, default to first sprint
-      if (sprintList.length > 0 && !sprintList.some((s) => s.id == sprintId)) {
+      // Auto-select active sprint (in_progress), fallback to first sprint
+      const activeSprint = findActiveSprint(sprintList);
+      if (activeSprint && sprintId !== activeSprint.id) {
+        setSprintId(activeSprint.id);
+      } else if (sprintList.length > 0 && !sprintList.some((s) => s.id == sprintId)) {
         setSprintId(sprintList[0].id);
       }
 
@@ -219,15 +223,67 @@ export default function ProjectBoard() {
     }
   }
 
+  // Start a sprint (set status to in_progress)
+  async function startSprint(targetSprintId) {
+    try {
+      const res = await fetch(`/api/sprints/${targetSprintId}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ status: "in_progress" }),
+      });
+      if (res.ok) {
+        setSprintId(targetSprintId);
+        setSprintStatus("in_progress");
+        // Reload to refresh sprint data
+        await loadColumns();
+      } else {
+        console.error("Error starting sprint");
+      }
+    } catch (err) {
+      console.error("Error starting sprint", err);
+    }
+  }
+
+  // Check if there's an active sprint
+  const hasActiveSprint = useMemo(() => {
+    return sprints.some((s) => s.status === "in_progress");
+  }, [sprints]);
+
+  // Get the first not_started sprint for "Start Sprint" button
+  const nextSprintToStart = useMemo(() => {
+    return sprints.find((s) => s.status === "not_started");
+  }, [sprints]);
+
   const projectTabs = {
     Board:
-      <Board
-        key={projectId}
-        columns={filteredColumns}
-        setColumns={setColumns}
-        boardTitle="Board"
-        emptyColumnsText="No Columns"
-      />,
+      <div>
+        {!hasActiveSprint && nextSprintToStart && (
+          <div className="bg-slate-700/50 border border-white/20 rounded-lg p-4 mb-4 flex items-center justify-between">
+            <div>
+              <p className="text-white font-medium m-0">No active sprint</p>
+              <p className="text-white/60 text-sm m-0">Start a sprint to begin tracking work on the board.</p>
+            </div>
+            <button
+              onClick={() => startSprint(nextSprintToStart.id)}
+              className="bg-gradient-to-r from-green-600 to-green-500 hover:from-green-500 hover:to-green-400 text-white font-medium px-4 py-2 rounded-lg shadow transition-all"
+            >
+              Start {nextSprintToStart.name}
+            </button>
+          </div>
+        )}
+        {!hasActiveSprint && !nextSprintToStart && sprints.length === 0 && (
+          <div className="bg-slate-700/50 border border-white/20 rounded-lg p-4 mb-4">
+            <p className="text-white/60 m-0">No sprints available. Create a sprint in the Backlog tab.</p>
+          </div>
+        )}
+        <Board
+          key={projectId}
+          columns={filteredColumns}
+          setColumns={setColumns}
+          boardTitle="Board"
+          emptyColumnsText="No Columns"
+        />
+      </div>,
     Backlog:
       <div>
         <Sprints

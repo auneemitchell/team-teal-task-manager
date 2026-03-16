@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react"; 
 import Board from "../components/Board"; 
 
-//made by borrowing code from Home.jsx
+// Clinician board - based on ProjectBoard.jsx pattern
 export default function ClinicianBoard() {
 
     const [columns, setColumns] = useState([]);
@@ -15,7 +15,6 @@ export default function ClinicianBoard() {
                 fetch(`/api/tasks?reporter_id=1`)
             ]);
 
-            //Borrowed from Home.jsx
             const cols = await colRes.json().catch(() => null);
             if (!Array.isArray(cols) || cols.error) {
                 console.error("API error loading columns", cols);

@@ -73,7 +73,7 @@ function Sprints({
             >
                 {sprints.map((s) => (
                 <option key={s.id} value={s.id} className="bg-slate-800">
-                  {s.name}
+                  {s.name}{s.status === "in_progress" ? " ✓" : ""}
                 </option>
               ))}
             </select>

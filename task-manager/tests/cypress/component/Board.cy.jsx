@@ -1,18 +1,18 @@
-import Kanban from "../../../src/components/Kanban";
-import { mountKanban } from "../support/component";
+import Board from "../../../src/components/Board";
+import { mountBoard } from "../support/component";
 
-describe("Kanban component", () => {
+describe("Board component", () => {
     
     
     it("renders empty when there are no columns", () => {
         const columns = [];
-        cy.mount(<Kanban columns={columns}/>);
+        cy.mount(<Board columns={columns} boardTitle="Test Board" emptyColumnsText="No Columns"/>);
         cy.get("p").contains("No Columns").should("exist");
     });
 
     it("renders all five columns", () => {
 
-        mountKanban();
+        mountBoard();
 
         cy.contains("To Do").should("exist");
         cy.contains("Blocked").should("exist");
@@ -22,7 +22,7 @@ describe("Kanban component", () => {
     });
 
     it("shows tasks in the correct column", () => {
-        mountKanban();
+        mountBoard();
          
         cy.contains("To Do").parent().within(() => {
             cy.contains("Set up project").should("exist");

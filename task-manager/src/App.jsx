@@ -1,5 +1,4 @@
 import { Routes, Route, Navigate, Link } from "react-router-dom";
-import Home from "./pages/Home.jsx";
 import Projects from "./pages/Projects.jsx";
 import ProjectBoard from "./pages/ProjectBoard.jsx";
 import Clinician from "./pages/Clinician.jsx";
