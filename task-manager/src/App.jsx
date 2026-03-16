@@ -1,5 +1,7 @@
 import { Routes, Route, Navigate, Link } from "react-router-dom";
 import Home from "./pages/Home.jsx";
+import Projects from "./pages/Projects.jsx";
+import ProjectBoard from "./pages/ProjectBoard.jsx";
 import Clinician from "./pages/Clinician.jsx";
 import TaskDetail from "./pages/TaskDetail.jsx";
 import Profile from "./pages/Profile.jsx";
@@ -52,11 +54,11 @@ export default function App() {
               My Profile
             </Link>
             <Link
-              to="/"
+              to="/projects"
               className="bg-gradient-to-r from-slate-700 to-slate-600 hover:from-slate-600 hover:to-slate-500 text-white font-medium px-6 py-3 rounded-lg shadow-lg transition-all duration-200 border border-slate-300"
-              aria-label="Kanban"
+              aria-label="Projects"
             >
-              Kanban
+              Projects
             </Link>
             <Link
               to="/clinician"
@@ -83,7 +85,23 @@ export default function App() {
           path="/"
           element={
             <ProtectedRoute>
-              <Home projectId={1} sprintId={1} />
+              <Navigate to="/projects/1" replace />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/projects"
+          element={
+            <ProtectedRoute>
+              <Projects />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/projects/:projectId"
+          element={
+            <ProtectedRoute>
+              <ProjectBoard />
             </ProtectedRoute>
           }
         />
