@@ -1,8 +1,7 @@
 import { useState, useEffect, useMemo } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import TaskForm from "../components/TaskForm.jsx";
-import Kanban from "../components/Kanban.jsx";
-import Scrum from "../components/Scrum.jsx";
+import Board from "../components/Board.jsx";
 import NewTaskButton from "../components/NewTaskButton.jsx";
 import Backlog from "../components/Backlog.jsx";
 import Sprints from "../components/Sprints.jsx";
@@ -199,20 +198,6 @@ export default function ProjectBoard() {
     }));
   }, [activeProjectColumns, selectedAssignee, selectedReporter]);
 
-  /* Gets the correct board type based on the current project. Defaults to Kanban */
-  const selectedProjectType = useMemo(() => {
-    const type = (project?.type || "kanban").toLowerCase();
-    return type;
-  }, [project]);
-
-  const BoardComponent = useMemo(() => {
-    const boardByType = {
-      kanban: Kanban,
-      scrum: Scrum,
-    };
-    return boardByType[selectedProjectType] || Kanban;
-  }, [selectedProjectType]);
-
   function handleProjectTabSwitch(e) {
     setProjectTab(e.target.value);
   }
@@ -236,10 +221,12 @@ export default function ProjectBoard() {
 
   const projectTabs = {
     Board:
-      <BoardComponent
+      <Board
         key={projectId}
         columns={filteredColumns}
         setColumns={setColumns}
+        boardTitle="Board"
+        emptyColumnsText="No Columns"
       />,
     Backlog:
       <div>
@@ -300,15 +287,13 @@ export default function ProjectBoard() {
         >
           Board
         </button>
-        {selectedProjectType === "scrum" ? (
-          <button
-            type="button"
-            value="Backlog"
-            onClick={handleProjectTabSwitch}
-          >
-            Backlog
-          </button>
-        ) : null}
+        <button
+          type="button"
+          value="Backlog"
+          onClick={handleProjectTabSwitch}
+        >
+          Backlog
+        </button>
       </div>
 
       <div className="flex items-center gap-4 mb-6">
@@ -318,7 +303,7 @@ export default function ProjectBoard() {
           onSelectProject={handleProjectChange}
         />
 
-        {selectedProjectType === "scrum" && projectTab === "Board" ? null : (
+        {projectTab === "Board" ? null : (
           <NewTaskButton openModal={openModal} />
         )}
 

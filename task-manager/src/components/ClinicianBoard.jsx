@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"; 
-import Kanban from "../components/Kanban"; 
+import Board from "../components/Board"; 
 
 //made by borrowing code from Home.jsx
 export default function ClinicianBoard() {
@@ -56,9 +56,11 @@ export default function ClinicianBoard() {
     }, []);
 
     return (
-        <Kanban
+        <Board
             columns={columns}
             setColumns={() => {}}
+            boardTitle="Clinician Board"
+            emptyColumnsText="No Columns"
         />
     );
 
