@@ -14,7 +14,7 @@ export default defineConfig({
       viteConfig,
     },
     setupNodeEvents(on, config) {
-      // register code-coverage backend task
+
       codeCoverageTask(on, config)
       return config
     },
