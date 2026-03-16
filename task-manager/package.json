@@ -20,7 +20,10 @@
 		"cf:migrate:prod": "npx wrangler d1 migrations apply cf_db --remote --env production",
 		"cf:migrate:local": "wrangler d1 migrations apply cf_db --local",
 		"predev": "npm run cf:migrate:local",
-		"cypress:open:ct": "cypress open --component --config-file cypress.config.mjs"
+		"cypress:open:ct": "cypress open --component --config-file cypress.config.mjs",
+		"ct:coverage": "CYPRESS=true cypress run --component --config-file cypress.config.mjs",
+		"coverage:report": "nyc report --reporter=lcov --report-dir coverage && open coverage/lcov-report/index.html",
+		"coverage": "npm run ct:coverage && npm run coverage:report"
 	},
 	"dependencies": {
 		"@hello-pangea/dnd": "^18.0.1",
@@ -32,6 +35,7 @@
 		"tailwindcss": "^4.1.18"
 	},
 	"devDependencies": {
+		"@cypress/code-coverage": "^4.0.2",
 		"@eslint/js": "^9.33.0",
 		"@testing-library/react": "^16.3.2",
 		"@types/react": "^19.1.10",
@@ -47,7 +51,15 @@
 		"react": "^19.2.4",
 		"react-dom": "^19.2.4",
 		"vite": "^7.3.1",
+		"vite-plugin-istanbul": "^8.0.0",
 		"vitest": "^4.0.18",
 		"wrangler": "^4.59.3"
+	},
+	"nyc": {
+		"reporter": ["lcov", "text-summary"],
+		"all": true,
+		"include": ["src/**/*.js", "src/**/*.jsx", "src/**/*.ts", "src/**/*.tsx"],
+		"extension": [".js", ".jsx", ".ts", ".tsx"],
+		"exclude": ["tests/**"]
 	}
 }

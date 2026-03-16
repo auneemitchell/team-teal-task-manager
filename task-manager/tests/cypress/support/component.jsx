@@ -3,6 +3,7 @@
 // - Sets up a helper to mount components with React Router
 /* eslint-disable react-refresh/only-export-components */
 
+import '@cypress/code-coverage/support';
 import { mount } from "cypress/react";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
 import "../../../src/index.css";
